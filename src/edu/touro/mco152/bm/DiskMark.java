@@ -15,7 +15,7 @@ public class DiskMark {
     private double cumMax = 0;
     private double cumAvg = 0;
     DiskMark(MarkType type) {
-        this.type = type;
+        this.type  = type;
     }
 
     @Override
