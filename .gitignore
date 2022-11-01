@@ -10,7 +10,7 @@ IntelliJ Items
 # build artifacts
 .gradle/
 bin/
-build/
+#build/
 out/
 
 # program execution artifacts
@@ -31,4 +31,4 @@ jdm.properties
 .gradle
 
 # Ignore Gradle build output directory
-build
+#build
