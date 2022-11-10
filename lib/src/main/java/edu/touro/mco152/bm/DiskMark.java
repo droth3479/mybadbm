@@ -18,6 +18,10 @@ public class DiskMark {
         this.type  = type;
     }
 
+    public DiskMark() {
+
+    }
+
     @Override
     public String toString() {
         return "Mark(" + type + "): " + getMarkNum() + " bwMbSec: " + getBwMbSecAsString() + " avg: " + getAvgAsString();
@@ -43,8 +47,12 @@ public class DiskMark {
         return markNum;
     }
 
+    /*
+    I changed this method to only change markNum if the parameter > 0
+     */
     public void setMarkNum(int markNum) {
-        this.markNum = markNum;
+        if(markNum > 0)
+            this.markNum = markNum;
     }
 
     public double getBwMbSec() {
