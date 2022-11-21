@@ -268,7 +268,11 @@ public final class MainFrame extends javax.swing.JFrame {
         startButton.setText("Start");
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startButtonActionPerformed(evt);
+                try {
+                    startButtonActionPerformed(evt);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -675,7 +679,7 @@ public final class MainFrame extends javax.swing.JFrame {
         Gui.selFrame.setVisible(true);
     }//GEN-LAST:event_chooseButtonActionPerformed
 
-    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_startButtonActionPerformed
         if (App.state == App.State.DISK_TEST_STATE) {
             App.cancelBenchmark();
         } else if (App.state == App.State.IDLE_STATE) {

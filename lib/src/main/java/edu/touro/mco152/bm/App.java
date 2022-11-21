@@ -45,7 +45,8 @@ public class App {
     public static int numOfMarks = 25;      // desired number of marks
     public static int numOfBlocks = 32;     // desired number of blocks
     public static int blockSizeKb = 512;    // size of a block in KBs
-    public static DiskWorker worker = null;
+    public static DiskWorker worker;
+    public static SwingUiImplementation swing;
     public static int nextMarkNumber = 1;   // number of the next mark
     public static double wMax = -1, wMin = -1, wAvg = -1;
     public static double rMax = -1, rMin = -1, rAvg = -1;
@@ -102,6 +103,9 @@ public class App {
     public static void init() {
         Gui.mainFrame = new MainFrame();
         Gui.selFrame = new SelectFrame();
+        swing = new SwingUiImplementation();
+        worker = new DiskWorker(swing);
+        swing.setDiskWorker(worker);
         p = new Properties();
         loadConfig();
         System.out.println(App.getConfigString());
@@ -226,10 +230,10 @@ public class App {
             msg("worker is null abort...");
             return;
         }
-        worker.cancel(true);
+        swing.uiCancel(true);
     }
 
-    public static void startBenchmark() {
+    public static void startBenchmark() throws Exception {
 
         //1. check that there isn't already a worker in progress
         if (state == State.DISK_TEST_STATE) {
@@ -249,8 +253,8 @@ public class App {
         Gui.mainFrame.adjustSensitivity();
 
         //4. set up disk worker thread and its event handlers
-        worker = new DiskWorker();
-        worker.addPropertyChangeListener((final PropertyChangeEvent event) -> {
+
+        swing.uiAddPropertyChangeListener((final PropertyChangeEvent event) -> {
             switch (event.getPropertyName()) {
                 case "progress":
                     int value = (Integer) event.getNewValue();
@@ -271,7 +275,7 @@ public class App {
         });
 
         //5. start the Swing worker thread
-        worker.execute();
+        swing.uiDoInBackground();
     }
 
     /**
