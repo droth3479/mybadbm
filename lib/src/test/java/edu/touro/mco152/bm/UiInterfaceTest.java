@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.List;
 import java.util.Properties;
 
-import static edu.touro.mco152.bm.App.dataDir;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UiInterfaceTest implements UiInterface{
@@ -21,7 +19,8 @@ class UiInterfaceTest implements UiInterface{
      *
      * @author lcmcohen
      */
-    private void setupDefaultAsPerProperties()
+    @Test
+    void setupDefaultAsPerProperties()
     {
         /// Do the minimum of what  App.init() would do to allow to run.
         Gui.mainFrame = new MainFrame();
@@ -49,25 +48,40 @@ class UiInterfaceTest implements UiInterface{
         {
             App.dataDir.mkdirs(); // create data dir if not already present
         }
+
+        setDiskWorker(new DiskWorker(this));
+
+        uiDoInBackground();
+
+        assertTrue(true);
     }
 
-    @Override @Test
+    @Override
+    public void uiDoInBackground() {
+        try {
+            worker.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void setDiskWorker(DiskWorker worker) {
-        this.worker = new DiskWorker(this);
-        assertNotNull(worker);
+        this.worker = worker;
+        assertNotNull(this.worker);
     }
 
-    @Override @Test
+    @Override
     public Boolean uiIsCancelled() {
         return isCancelled;
     }
 
-    @Override @Test
+    @Override
     public void setUiProgress(int i) {
         assertTrue(i >= 0 && i <= 100);
     }
 
-    @Override @Test
+    @Override
     public void uiPublish(DiskMark dm) {
         assertTrue(dm.getMarkNum() <= App.numOfMarks);
         assertTrue(dm.getAvgAsString().matches("-?\\d+(\\.\\d+)?"));
@@ -76,23 +90,13 @@ class UiInterfaceTest implements UiInterface{
         assertTrue(dm.getMinAsString().matches("-?\\d+(\\.\\d+)?"));
     }
 
-    @Override @Test
+    @Override
     public void uiCancel(Boolean b) {
         isCancelled = b;
-        assertEquals(b, isCancelled);
     }
 
     //This method has no purpose in a non-gui context
     @Override
     public void uiAddPropertyChangeListener(PropertyChangeListener pcl) {
-    }
-
-    @Override @Test
-    public void uiDoInBackground() {
-        try {
-            worker.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
