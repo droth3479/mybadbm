@@ -11,6 +11,9 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This is a test class for the Command pattern implementation
+ */
 public class CommandTest implements UiInterface{
     Boolean isCancelled = false;
     Executor executor = new Executor();

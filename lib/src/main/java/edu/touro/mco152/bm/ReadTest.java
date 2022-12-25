@@ -16,6 +16,10 @@ import static edu.touro.mco152.bm.App.*;
 import static edu.touro.mco152.bm.App.msg;
 import static edu.touro.mco152.bm.DiskMark.MarkType.READ;
 
+/**
+ * Concrete command to execute read tests
+ * Accepts/sets test params via constructor
+ */
 public class ReadTest implements ICommand{
     UiInterface ui;
     int numMarks;
@@ -23,6 +27,14 @@ public class ReadTest implements ICommand{
     int blockSizeKb;
     DiskRun.BlockSequence blockSequence;
 
+    /**
+     * Constructor to be called by the client.
+     * @param ui the UiInterface to be implemented by the test
+     * @param numMarks the number of files to run the test on
+     * @param numBlocks the number of blocks to break the test into
+     * @param blockSizeKb how many kilobytes each block will contian
+     * @param blockSequence a DiskRun enum to determine how the test will be run
+     */
     public ReadTest(UiInterface ui, int numMarks, int numBlocks, int blockSizeKb, DiskRun.BlockSequence blockSequence) {
         this.ui = ui;
         this.numMarks = numMarks;
@@ -30,6 +42,10 @@ public class ReadTest implements ICommand{
         this.blockSizeKb = blockSizeKb;
         this.blockSequence = blockSequence;
     }
+
+    /**
+     * Execute method to be called by the Executor
+     */
     public void execute() {
         // declare local vars formerly in DiskWorker
         int unitsComplete = 0;
