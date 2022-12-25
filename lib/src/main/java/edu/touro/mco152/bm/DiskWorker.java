@@ -66,10 +66,17 @@ public class DiskWorker{
         }
 
         /*
+          An Executor is used to call commands for bm tests
+         */
+        Executor executor = new Executor();
+
+        /*
           The GUI allows either a write, read, or both types of BMs to be started. They are done serially.
          */
         if (App.writeTest) {
-            WriteTest.execute(ui);
+            WriteTest wt = new WriteTest(ui, numOfMarks, numOfBlocks, blockSizeKb, blockSequence);
+            executor.setCommand(wt);
+            executor.execute();
         }
 
         /*
@@ -91,7 +98,9 @@ public class DiskWorker{
 
         // Same as above, just for Read operations instead of Writes.
         if (App.readTest) {
-            ReadTest.execute(ui);
+            ReadTest rt = new ReadTest(ui, numOfMarks, numOfBlocks, blockSizeKb, blockSequence);
+            executor.setCommand(rt);
+            executor.execute();
         }
         App.nextMarkNumber += App.numOfMarks;
         return true;

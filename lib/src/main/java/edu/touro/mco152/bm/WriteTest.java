@@ -16,21 +16,28 @@ import static edu.touro.mco152.bm.App.*;
 import static edu.touro.mco152.bm.App.msg;
 import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
 
-public class WriteTest {
+public class WriteTest implements ICommand{
+    UiInterface ui;
+    int numMarks;
+    int numBlocks;
+    int blockSizeKb;
+    DiskRun.BlockSequence blockSequence;
 
-    public static void execute(UiInterface ui){
+    public WriteTest(UiInterface ui, int numMarks, int numBlocks, int blockSizeKb, DiskRun.BlockSequence blockSequence){
+        this.ui = ui;
+        this.numMarks = numMarks;
+        this.numBlocks = numBlocks;
+        this.blockSizeKb = blockSizeKb;
+        this.blockSequence = blockSequence;
+    }
+
+    public void execute(){
         // declare local vars formerly in DiskWorker
-
-        int wUnitsComplete = 0,
-                rUnitsComplete = 0,
-                unitsComplete;
-
-        int wUnitsTotal = App.writeTest ? numOfBlocks * numOfMarks : 0;
-        int rUnitsTotal = App.readTest ? numOfBlocks * numOfMarks : 0;
-        int unitsTotal = wUnitsTotal + rUnitsTotal;
+        int unitsComplete = 0;
+        int unitsTotal = numMarks * numBlocks;
         float percentComplete;
 
-        int blockSize = blockSizeKb * KILOBYTE;
+        int blockSize = blockSizeKb * 1024;
         byte[] blockArr = new byte[blockSize];
         for (int b = 0; b < blockArr.length; b++) {
             if (b % 2 == 0) {
@@ -42,10 +49,10 @@ public class WriteTest {
         int startFileNum = App.nextMarkNumber;
 
         DiskRun run = new DiskRun(DiskRun.IOMode.WRITE, App.blockSequence);
-        run.setNumMarks(App.numOfMarks);
-        run.setNumBlocks(App.numOfBlocks);
-        run.setBlockSize(App.blockSizeKb);
-        run.setTxSize(App.targetTxSizeKb());
+        run.setNumMarks(numMarks);
+        run.setNumBlocks(numBlocks);
+        run.setBlockSize(blockSizeKb);
+        run.setTxSize((long) blockSizeKb * numBlocks * numMarks);
         run.setDiskInfo(Util.getDiskInfo(dataDir));
 
         // Tell logger and GUI to display what we know so far about the Run
@@ -64,7 +71,7 @@ public class WriteTest {
               that keeps writing data (in its own loop - for specified # of blocks). Each 'Mark' is timed
               and is reported to the GUI for display as each Mark completes.
              */
-        for (int m = startFileNum; m < startFileNum + App.numOfMarks && !ui.uiIsCancelled(); m++) {
+        for (int m = startFileNum; m < startFileNum + numMarks && !ui.uiIsCancelled(); m++) {
 
             if (App.multiFile) {
                 testFile = new File(dataDir.getAbsolutePath()
@@ -82,17 +89,16 @@ public class WriteTest {
 
             try {
                 try (RandomAccessFile rAccFile = new RandomAccessFile(testFile, mode)) {
-                    for (int b = 0; b < numOfBlocks; b++) {
-                        if (App.blockSequence == DiskRun.BlockSequence.RANDOM) {
-                            int rLoc = Util.randInt(0, numOfBlocks - 1);
+                    for (int b = 0; b < numBlocks; b++) {
+                        if (blockSequence == DiskRun.BlockSequence.RANDOM) {
+                            int rLoc = Util.randInt(0, numBlocks - 1);
                             rAccFile.seek((long) rLoc * blockSize);
                         } else {
                             rAccFile.seek((long) b * blockSize);
                         }
                         rAccFile.write(blockArr, 0, blockSize);
                         totalBytesWrittenInMark += blockSize;
-                        wUnitsComplete++;
-                        unitsComplete = rUnitsComplete + wUnitsComplete;
+                        unitsComplete++;
                         percentComplete = (float) unitsComplete / (float) unitsTotal * 100f;
 
                             /*
