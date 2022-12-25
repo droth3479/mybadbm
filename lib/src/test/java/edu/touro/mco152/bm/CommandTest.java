@@ -1,4 +1,7 @@
 package edu.touro.mco152.bm;
+import edu.touro.mco152.bm.command.Executor;
+import edu.touro.mco152.bm.command.ReadTest;
+import edu.touro.mco152.bm.command.WriteTest;
 import edu.touro.mco152.bm.persist.DiskRun;
 import edu.touro.mco152.bm.ui.Gui;
 import edu.touro.mco152.bm.ui.MainFrame;

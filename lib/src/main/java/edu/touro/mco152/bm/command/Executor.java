@@ -1,4 +1,4 @@
-package edu.touro.mco152.bm;
+package edu.touro.mco152.bm.command;
 
 /**
  * Executor class to act as mediator between client and commands
