@@ -1,10 +1,13 @@
 package edu.touro.mco152.bm.persist;
 
 import edu.touro.mco152.bm.DiskRunObserver;
-import edu.touro.mco152.bm.persist.DiskRun;
-import edu.touro.mco152.bm.persist.EM;
 import jakarta.persistence.EntityManager;
 
+/**
+ *  This class is an implementation of the observer pattern.
+ *  It waits to be notified of a test completion,
+ *  and handles persistence
+ */
 public class PersistenceObserver implements DiskRunObserver {
     @Override
     public void update(DiskRun run) {

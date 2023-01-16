@@ -1,10 +1,12 @@
 package edu.touro.mco152.bm;
 
-import edu.touro.mco152.bm.DiskRunObserver;
 import edu.touro.mco152.bm.persist.DiskRun;
-
 import java.util.ArrayList;
 
+/**
+ * This class handles observer registration and notification.
+ * It is the connection between observers and subjects.
+ */
 public class Notifier {
     ArrayList<DiskRunObserver> observers = new ArrayList<DiskRunObserver>();
 

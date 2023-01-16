@@ -110,7 +110,7 @@ class UiInterfaceTest implements UiInterface{
 
     @AfterAll
     @Test
-    public static void observerNotified(){
+    static void observerNotified(){
         assertTrue(testObserver.invoked);
     }
 }
