@@ -113,6 +113,8 @@ public class App {
         Gui.mainFrame.setLocationRelativeTo(null);
         Gui.progressBar = Gui.mainFrame.getProgressBar();
 
+        //Add observers TODO
+
         // configure the embedded DB in .jDiskMark
         System.setProperty("derby.system.home", APP_CACHE_DIR);
         loadSavedRuns();
