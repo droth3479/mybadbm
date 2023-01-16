@@ -2,9 +2,6 @@ package edu.touro.mco152.bm;
 
 import org.junit.jupiter.api.Test;
 
-
-import javax.swing.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class UtilTest {

@@ -1,13 +1,10 @@
 package edu.touro.mco152.bm.command;
 
-import edu.touro.mco152.bm.App;
-import edu.touro.mco152.bm.DiskMark;
-import edu.touro.mco152.bm.UiInterface;
-import edu.touro.mco152.bm.Util;
+import edu.touro.mco152.bm.*;
 import edu.touro.mco152.bm.persist.DiskRun;
-import edu.touro.mco152.bm.persist.EM;
+import edu.touro.mco152.bm.persist.PersistenceObserver;
 import edu.touro.mco152.bm.ui.Gui;
-import jakarta.persistence.EntityManager;
+import edu.touro.mco152.bm.ui.RunPanelObserver;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +27,8 @@ public class ReadTest implements ICommand{
     int numBlocks;
     int blockSizeKb;
     DiskRun.BlockSequence blockSequence;
+    Notifier notifier;
+
 
     /**
      * Constructor to be called by the client.
@@ -45,6 +44,12 @@ public class ReadTest implements ICommand{
         this.numBlocks = numBlocks;
         this.blockSizeKb = blockSizeKb;
         this.blockSequence = blockSequence;
+
+        //Create notifier and register observers
+        notifier = new Notifier();
+        notifier.registerObserver(new PersistenceObserver());
+        notifier.registerObserver(new RunPanelObserver());
+        notifier.registerObserver(new RulesObserver());
     }
 
     /**
@@ -125,11 +130,7 @@ public class ReadTest implements ICommand{
             run.setEndTime(new Date());
         }
 
-        EntityManager em = EM.getEntityManager();
-        em.getTransaction().begin();
-        em.persist(run);
-        em.getTransaction().commit();
-
-        Gui.runPanel.addRun(run);
+        //Notify observers
+        notifier.updateObservers(run);
     }
 }

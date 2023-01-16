@@ -2,6 +2,7 @@ package edu.touro.mco152.bm;
 
 import edu.touro.mco152.bm.ui.Gui;
 import edu.touro.mco152.bm.ui.MainFrame;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.beans.PropertyChangeListener;
@@ -13,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class UiInterfaceTest implements UiInterface{
     DiskWorker worker = new DiskWorker(this);
     Boolean isCancelled = false;
+    Notifier notifier;
+    static TestObserver testObserver = new TestObserver();
 
     /**
      * Bruteforce setup of static classes/fields to allow DiskWorker to run.
@@ -28,6 +31,10 @@ class UiInterfaceTest implements UiInterface{
         App.loadConfig();
         System.out.println(App.getConfigString());
         Gui.progressBar = Gui.mainFrame.getProgressBar(); //must be set or get Nullptr
+
+        //Add observers
+        notifier = new Notifier();
+        notifier.registerObserver(testObserver);
 
         // configure the embedded DB in .jDiskMark
         System.setProperty("derby.system.home", App.APP_CACHE_DIR);
@@ -60,6 +67,7 @@ class UiInterfaceTest implements UiInterface{
     public void uiDoInBackground() {
         try {
             worker.execute();
+            notifier.updateObservers(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,5 +106,11 @@ class UiInterfaceTest implements UiInterface{
     //This method has no purpose in a non-gui context
     @Override
     public void uiAddPropertyChangeListener(PropertyChangeListener pcl) {
+    }
+
+    @AfterAll
+    @Test
+    static void observerNotified(){
+        assertTrue(testObserver.invoked);
     }
 }
